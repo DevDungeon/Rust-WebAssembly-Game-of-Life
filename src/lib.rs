@@ -5,6 +5,7 @@ mod utils;
 
 use cfg_if::cfg_if;
 use wasm_bindgen::prelude::*;
+use std::fmt;
 
 cfg_if! {
     // When the `wee_alloc` feature is enabled, use `wee_alloc` as the global
@@ -15,9 +16,6 @@ cfg_if! {
         static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
     }
 }
-
-///////////////////////////////////////////////
-
 
 #[wasm_bindgen]
 #[repr(u8)]
@@ -33,25 +31,6 @@ pub struct Universe {
     height: u32,
     cells: Vec<Cell>,
 }
-
-
-
-use std::fmt;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 impl Universe {
     fn get_index(&self, row: u32, column: u32) -> usize {
@@ -76,8 +55,6 @@ impl Universe {
         count
     }
 }
-
-
 
 #[wasm_bindgen]
 impl Universe {
@@ -112,7 +89,6 @@ impl Universe {
         }
         self.cells = next;
     }
-
 
     pub fn new() -> Universe {
         let width = 64;
@@ -152,21 +128,4 @@ impl Universe {
         self.cells.as_ptr()
     }
 
-
-
-}
-
-
-
-impl fmt::Display for Universe {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        for line in self.cells.as_slice().chunks(self.width as usize) {
-            for &cell in line {
-                let symbol = if cell == Cell::Dead { '◻' } else { '◼' };
-                write!(f, "{}", symbol)?;
-            }
-            write!(f, "\n")?;
-        }
-        Ok(())
-    }
 }
